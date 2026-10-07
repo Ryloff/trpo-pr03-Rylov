@@ -8,27 +8,32 @@
   <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="#">ЛР-Панель</a>
+
       <button class="navbar-toggler" type="button"
-              data-bs-toggle="collapse" data-bs-target="#mainNav">
+              data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-label="Переключить навигацию">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="#dashboard">Показатели</a></li>
           <li class="nav-item"><a class="nav-link" href="#actions">Действия</a></li>
-          <li class="nav-item"><a class="nav-link" href="#schedule">Расписание</a></li>
+          <li class="nav-item"><a class="nav-link" href="#feedback">Обратная связь</a></li>
         </ul>
       </div>
     </div>
   </nav>
+
   <main class="container py-4">
+
     <section id="dashboard" class="mb-4">
       <h2 class="h4 mb-3">Показатели</h2>
-      <div class="row g-3" id="cardsRow">
-      </div>
+      <div class="row g-3" id="cardsRow"></div>
     </section>
 
     <section id="actions" class="mb-4">
@@ -39,6 +44,7 @@
           + Добавить запись
         </button>
       </div>
+
       <div class="table-responsive">
         <table class="table table-striped align-middle">
           <thead>
@@ -49,15 +55,15 @@
               <th>Статус</th>
             </tr>
           </thead>
-          <tbody id="actionsBody">
-          </tbody>
+          <tbody id="actionsBody"></tbody>
         </table>
       </div>
     </section>
 
-    <section id="schedule" class="mb-4">
+    <section id="feedback" class="mb-4">
       <h2 class="h4 mb-3">Обратная связь</h2>
       <div class="row g-3">
+
         <div class="col-12 col-md-6">
           <form id="feedbackForm" novalidate>
             <div class="mb-3">
@@ -67,30 +73,31 @@
               <div class="invalid-feedback">Введите корректный email.</div>
               <div class="valid-feedback">Отлично!</div>
             </div>
-            <button type="submit" class="btn btn-success" id="saveBtn">
-              Сохранить
-            </button>
+            <button type="submit" class="btn btn-success">Сохранить</button>
           </form>
         </div>
+
         <div class="col-12 col-md-6">
           <button class="btn btn-outline-secondary"
                   data-bs-toggle="offcanvas" data-bs-target="#infoCanvas">
             Дополнительно
           </button>
-          <div class="offcanvas offcanvas-end" tabindex="-1" id="infoCanvas">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title">О проекте</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div class="offcanvas-body">
-              <p>Дашборд для отслеживания лабораторных работ.</p>
-              <p class="text-muted small">Данные берутся из dashboard.json.</p>
-            </div>
-          </div>
         </div>
+
       </div>
     </section>
   </main>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="infoCanvas">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">О проекте</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p>Дашборд для отслеживания лабораторных работ.</p>
+      <p class="text-muted small">Данные берутся из data/dashboard.json.</p>
+    </div>
+  </div>
 
   <div class="modal fade" id="addModal" tabindex="-1">
     <div class="modal-dialog">
@@ -104,12 +111,12 @@
             <div class="mb-3">
               <label for="studentName" class="form-label">Имя студента</label>
               <input type="text" class="form-control" id="studentName" required>
-              <div class="invalid-feedback">Укажите имя.</div>
+              <div class="invalid-feedback">Укажите имя!</div>
             </div>
             <div class="mb-3">
               <label for="workName" class="form-label">Название работы</label>
               <input type="text" class="form-control" id="workName" required>
-              <div class="invalid-feedback">Укажите работу.</div>
+              <div class="invalid-feedback">Укажите работу!</div>
             </div>
           </form>
         </div>

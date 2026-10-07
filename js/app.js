@@ -42,7 +42,6 @@ async function showToastFromJSON() {
   const notes = await loadJSON('data/notifications.json');
   const toastEl = document.getElementById('saveToast');
   document.getElementById('toastBody').textContent = notes[0].text;
-  // Шаг 11: getOrCreateInstance
   bootstrap.Toast.getOrCreateInstance(toastEl).show();
 }
 
