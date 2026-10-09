@@ -1,83 +1,132 @@
-async function loadJSON(path) {
-  const res = await fetch(path);
-  if (!res.ok) throw new Error(`Не удалось загрузить ${path}`);
-  return res.json();
+var rowsData = [];
+
+function loadJSON(path, callback) {
+  fetch(path)
+    .then(function (response) { return response.json(); })
+    .then(function (data) { callback(data); })
+    .catch(function (error) { console.error('Ошибка загрузки ' + path, error); });
 }
 
-async function renderCards() {
-  try {
-    const data = await loadJSON('data/dashboard.json');
-    const row = document.getElementById('cardsRow');
-    row.innerHTML = data.metrics.map(m => `
-      <div class="col-12 col-md-6 col-xl-3">
-        <div class="card stat-card h-100">
-          <div class="card-body">
-            <h6 class="text-muted text-uppercase small">${m.label}</h6>
-            <p class="display-6 mb-0">${m.value}</p>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) {
-    console.error(e);
+function renderCards(data) {
+  var row = document.getElementById('cardsRow');
+  var html = '';
+
+  for (var i = 0; i < data.metrics.length; i++) {
+    var m = data.metrics[i];
+    html += '<div class="col-12 col-md-6 col-xl-3">';
+    html += '  <div class="card stat-card h-100">';
+    html += '    <div class="card-body">';
+    html += '      <h6 class="text-muted text-uppercase small">' + m.title + '</h6>';
+    html += '      <p class="display-6 mb-0">' + m.value + '</p>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '</div>';
   }
+
+  row.innerHTML = html;
 }
 
-async function renderTable() {
-  const data = await loadJSON('data/dashboard.json');
-  const body = document.getElementById('actionsBody');
-  body.innerHTML = data.actions.map((a, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${a.student}</td>
-      <td>${a.work}</td>
-      <td><span class="badge bg-${a.status === 'done' ? 'success' : 'warning'}">
-        ${a.status === 'done' ? 'Выполнено' : 'В работе'}
-      </span></td>
-    </tr>
-  `).join('');
+function renderTable() {
+  var body = document.getElementById('actionsBody');
+  var html = '';
+
+  if (rowsData.length === 0) {
+    body.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Записей нет</td></tr>';
+    return;
+  }
+
+  for (var i = 0; i < rowsData.length; i++) {
+    var r = rowsData[i];
+
+    var badgeClass = 'secondary';
+    if (r.status === 'Готово')   badgeClass = 'success';
+    if (r.status === 'В работе') badgeClass = 'warning';
+
+    html += '<tr>';
+    html += '  <td>' + r.id + '</td>';
+    html += '  <td>' + r.action + '</td>';
+    html += '  <td><span class="badge bg-' + badgeClass + '">' + r.status + '</span></td>';
+    html += '</tr>';
+  }
+
+  body.innerHTML = html;
 }
 
-async function showToastFromJSON() {
-  const notes = await loadJSON('data/notifications.json');
-  const toastEl = document.getElementById('saveToast');
-  document.getElementById('toastBody').textContent = notes[0].text;
+function showToast(text) {
+  var toastEl = document.getElementById('saveToast');
+  document.getElementById('toastBody').textContent = text;
   bootstrap.Toast.getOrCreateInstance(toastEl).show();
 }
 
-document.getElementById('feedbackForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const input = document.getElementById('emailInput');
-  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
-
-  input.classList.toggle('is-invalid', !valid);
-  input.classList.toggle('is-valid', valid);
-
-  if (valid) showToastFromJSON();
+document.addEventListener('DOMContentLoaded', function () {
+  loadJSON('data/dashboard.json', function (data) {
+    renderCards(data);
+    rowsData = data.rows;
+    renderTable();
+  });
 });
 
-document.getElementById('modalSaveBtn').addEventListener('click', () => {
-  const name = document.getElementById('studentName');
-  const work = document.getElementById('workName');
-  let ok = true;
+document.getElementById('feedbackForm').addEventListener('submit', function (e) {
+  e.preventDefault();
 
-  [name, work].forEach(el => {
-    const empty = el.value.trim() === '';
-    el.classList.toggle('is-invalid', empty);
-    el.classList.toggle('is-valid', !empty);
-    if (empty) ok = false;
+  var input = document.getElementById('emailInput');
+  var value = input.value.trim();
+
+  var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  if (!ok) {
+    input.classList.remove('is-valid');
+    input.classList.add('is-invalid');
+    return;
+  }
+
+  input.classList.remove('is-invalid');
+  input.classList.add('is-valid');
+
+  showToast('Email принят');
+
+  setTimeout(function () {
+    document.getElementById('feedbackForm').reset();
+    input.classList.remove('is-valid');
+  }, 1500);
+});
+
+document.getElementById('modalSaveBtn').addEventListener('click', function () {
+  var actionInput = document.getElementById('actionName');
+  var statusInput = document.getElementById('actionStatus');
+
+  // Валидация
+  if (actionInput.value.trim() === '') {
+    actionInput.classList.remove('is-valid');
+    actionInput.classList.add('is-invalid');
+    return;
+  }
+
+  actionInput.classList.remove('is-invalid');
+  actionInput.classList.add('is-valid');
+
+  var newId = 1;
+  if (rowsData.length > 0) {
+    newId = rowsData[rowsData.length - 1].id + 1;
+  }
+
+  rowsData.push({
+    id: newId,
+    action: actionInput.value.trim(),
+    status: statusInput.value
   });
 
-  if (!ok) return;
+  renderTable();
 
-  const modalEl = document.getElementById('addModal');
-  bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('addModal')).hide();
 
   document.getElementById('addForm').reset();
-  [name, work].forEach(el => el.classList.remove('is-valid', 'is-invalid'));
+  actionInput.classList.remove('is-valid');
 
-  showToastFromJSON();
+  showToast('Операция добавлена');
 });
 
-renderCards();
-renderTable();
+document.getElementById('addModal').addEventListener('hidden.bs.modal', function () {
+  var actionInput = document.getElementById('actionName');
+  actionInput.classList.remove('is-valid', 'is-invalid');
+});

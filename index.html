@@ -11,7 +11,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">ЛР-Панель</a>
+      <a class="navbar-brand" href="#">Панель операций</a>
 
       <button class="navbar-toggler" type="button"
               data-bs-toggle="collapse" data-bs-target="#mainNav"
@@ -21,8 +21,8 @@
 
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#dashboard">Показатели</a></li>
-          <li class="nav-item"><a class="nav-link" href="#actions">Действия</a></li>
+          <li class="nav-item"><a class="nav-link" href="#dashboard">Метрики</a></li>
+          <li class="nav-item"><a class="nav-link" href="#actions">Операции</a></li>
           <li class="nav-item"><a class="nav-link" href="#feedback">Обратная связь</a></li>
         </ul>
       </div>
@@ -32,13 +32,13 @@
   <main class="container py-4">
 
     <section id="dashboard" class="mb-4">
-      <h2 class="h4 mb-3">Показатели</h2>
+      <h2 class="h4 mb-3">Метрики</h2>
       <div class="row g-3" id="cardsRow"></div>
     </section>
 
     <section id="actions" class="mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h4 mb-0">Последние действия</h2>
+        <h2 class="h4 mb-0">Последние операции</h2>
         <button class="btn btn-primary"
                 data-bs-toggle="modal" data-bs-target="#addModal">
           + Добавить запись
@@ -49,9 +49,8 @@
         <table class="table table-striped align-middle">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Студент</th>
-              <th>Работа</th>
+              <th>ID</th>
+              <th>Операция</th>
               <th>Статус</th>
             </tr>
           </thead>
@@ -70,7 +69,7 @@
               <label for="emailInput" class="form-label">Email</label>
               <input type="email" class="form-control" id="emailInput"
                      placeholder="student@example.com" required>
-              <div class="invalid-feedback">Введите корректный email.</div>
+              <div class="invalid-feedback">Введите корректный email!</div>
               <div class="valid-feedback">Отлично!</div>
             </div>
             <button type="submit" class="btn btn-success">Сохранить</button>
@@ -90,11 +89,11 @@
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="infoCanvas">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title">О проекте</h5>
+      <h5 class="offcanvas-title">О работе</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
-      <p>Дашборд для отслеживания лабораторных работ.</p>
+      <p>Дашборд для отслеживания операций.</p>
       <p class="text-muted small">Данные берутся из data/dashboard.json.</p>
     </div>
   </div>
@@ -109,14 +108,17 @@
         <div class="modal-body">
           <form id="addForm" novalidate>
             <div class="mb-3">
-              <label for="studentName" class="form-label">Имя студента</label>
-              <input type="text" class="form-control" id="studentName" required>
-              <div class="invalid-feedback">Укажите имя!</div>
+              <label for="actionName" class="form-label">Назначение операции</label>
+              <input type="text" class="form-control" id="actionName" placeholder="Например: Операция 9" required>
+              <div class="invalid-feedback">Укажите название операции!</div>
             </div>
             <div class="mb-3">
-              <label for="workName" class="form-label">Название работы</label>
-              <input type="text" class="form-control" id="workName" required>
-              <div class="invalid-feedback">Укажите работу!</div>
+              <label for="actionStatus" class="form-label">Статус</label>
+              <select class="form-select" id="actionStatus">
+                <option value="Новая">Новая</option>
+                <option value="В работе" selected>В работе</option>
+                <option value="Готово">Готово</option>
+              </select>
             </div>
           </form>
         </div>
